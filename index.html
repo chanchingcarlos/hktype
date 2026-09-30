@@ -125,13 +125,10 @@ th.sorted{color:var(--ink)}
 .delBtn:hover{border-color:var(--ink);box-shadow:var(--shadow-md)}
 #mistPracticeBox{border:1px dashed var(--ink) !important;border-radius:16px !important;background:var(--surface2)}
 footer{color:var(--muted);text-align:center;padding:24px;font-size:12px;letter-spacing:.5px}
-#setupToggle,#guideToggle{display:none}
+#guideToggle{display:none}
 @media(max-width:640px){
 .wrap{display:flex;flex-direction:column}
 .wrap>.card{order:1}
-#setupToggle{order:2;display:flex;align-items:center;justify-content:space-between;width:100%;margin:14px 0 0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;font-weight:850;font-size:14px;cursor:pointer}
-#setupToggle:active{transform:scale(.99)}
-#setupToggle .arr{color:var(--muted)}
 #guideToggle{order:5;display:flex;align-items:center;justify-content:space-between;width:100%;margin:14px 0 0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;font-weight:850;font-size:14px;cursor:pointer}
 #guideToggle:active{transform:scale(.99)}
 #guideToggle .arr{color:var(--muted)}
@@ -140,7 +137,6 @@ footer{color:var(--muted);text-align:center;padding:24px;font-size:12px;letter-s
 .guide{order:6}
 .wrap>footer{order:7}
 .wrap.guide-hidden .guide{display:none}
-.wrap.compact #diffRow{display:none}
 .card-inner{padding:16px 14px}
 .q-char{font-size:60px;margin:8px 0 4px}
 .q-word{font-size:36px;margin:8px 0 4px}
@@ -233,7 +229,6 @@ input[type=text]:focus{box-shadow:0 0 0 3px rgba(127,127,135,.28),0 0 26px rgba(
 </div></div></header>
 <div class="wrap">
 
-<button id="setupToggle" aria-expanded="false"><span>LV.1 初級</span><span class="arr">▾</span></button>
 <div class="diff-row" id="diffRow">
 <div class="slider-wrap">
 <div class="slider-top"><div class="slider-name" id="sliderName"><span class="lv">LV.1</span> 初級</div><div class="slider-info" id="sliderInfo">載入中</div></div>
@@ -508,6 +503,7 @@ return null;
 return null;
 }
 function clearAuto(){if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}}
+function focusNoJump(el){try{if(!el||!el.focus)return;const y=(window.scrollY||window.pageYOffset||0);try{el.focus({preventScroll:true});}catch(e){el.focus();}const y2=(window.scrollY||window.pageYOffset||0);if(y2!==y)window.scrollTo(0,y);}catch(e){}}
 function autoNext(fn){clearAuto();autoTimer=setTimeout(()=>{autoTimer=null;fn();},1000);}
 // TYPE GAME
 function drawType(item){
@@ -518,7 +514,7 @@ document.getElementById('qhint-type').textContent='撳「提示」會顯示頭�
 const inp=document.getElementById('input-type');inp.value='';inp.readOnly=false;inp.disabled=false;
 const fb=document.getElementById('fb-type');fb.className='feedback';fb.innerHTML='';
 document.getElementById('btn-next-type').style.display='none';
-setTimeout(()=>inp.focus(),30);
+setTimeout(()=>focusNoJump(inp),30);
 }
 function typeDone(msg){
 const s=state.type;s.cur=null;s.locked=true;
@@ -546,7 +542,7 @@ drawType(it);return;
 }
 typeDone('呢個難度全部識晒');
 }
-function checkType(){const s=state.type;if(s.locked||!s.cur)return;const user=noTone(document.getElementById('input-type').value);const ans=noTone(s.cur[1]);const ansD=disp(s.cur[1]);const fb=document.getElementById('fb-type');s.locked=true;const inp=document.getElementById('input-type');inp.readOnly=true;const nextBtn=document.getElementById('btn-next-type');nextBtn.style.display='block';bumpTries(s.cur[0]);if((user===ans||altOk(s.cur[0],user))&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 答啱，已存入識字庫，1秒後自動下一題</div><b>做得好</b><div>'+s.cur[0]+' = '+ansD+'</div>'+(user!==ans?'<div style="color:var(--muted);margin-top:6px">你打咗 '+user+'，都啱 — 多音字，常用讀音係 '+ansD+'</div>':'')+'</div></div></div>';score+=10+streak*2;streak++;addOk(s.cur[0],s.cur[1]);bumpTotal();updateStats();autoNext(newType);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW · 睇清楚，已存入錯題庫，隔幾題會再出</div><div class="corr">'+s.cur[0]+' 應該讀</div><div class="py-big">'+ansD+'</div><div>你打咗：'+(user||'(空白)')+'</div><div style="color:var(--muted);margin-top:6px">記住佢，再撳 Enter / 下一題。</div></div></div>';streak=0;wrongTotal++;addMistake(s.cur[0],s.cur[1],user);pushRetry(retryType,s.cur);bumpTotal();updateStats();setTimeout(()=>nextBtn.focus(),30);}}
+function checkType(){const s=state.type;if(s.locked||!s.cur)return;const user=noTone(document.getElementById('input-type').value);const ans=noTone(s.cur[1]);const ansD=disp(s.cur[1]);const fb=document.getElementById('fb-type');s.locked=true;const inp=document.getElementById('input-type');inp.readOnly=true;const nextBtn=document.getElementById('btn-next-type');nextBtn.style.display='block';bumpTries(s.cur[0]);if((user===ans||altOk(s.cur[0],user))&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 答啱，已存入識字庫，1秒後自動下一題</div><b>做得好</b><div>'+s.cur[0]+' = '+ansD+'</div>'+(user!==ans?'<div style="color:var(--muted);margin-top:6px">你打咗 '+user+'，都啱 — 多音字，常用讀音係 '+ansD+'</div>':'')+'</div></div></div>';score+=10+streak*2;streak++;addOk(s.cur[0],s.cur[1]);bumpTotal();updateStats();autoNext(newType);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW · 睇清楚，已存入錯題庫，隔幾題會再出</div><div class="corr">'+s.cur[0]+' 應該讀</div><div class="py-big">'+ansD+'</div><div>你打咗：'+(user||'(空白)')+'</div><div style="color:var(--muted);margin-top:6px">記住佢，再撳 Enter / 下一題。</div></div></div>';streak=0;wrongTotal++;addMistake(s.cur[0],s.cur[1],user);pushRetry(retryType,s.cur);bumpTotal();updateStats();setTimeout(()=>focusNoJump(nextBtn),30);}}
 // WORD
 function drawWord(item){
 const s=state.word;s.cur=item;s.locked=false;
@@ -554,7 +550,7 @@ document.getElementById('qword').textContent=item[0];
 const inp=document.getElementById('input-word');inp.value='';inp.readOnly=false;inp.disabled=false;
 const fb=document.getElementById('fb-word');fb.className='feedback';fb.innerHTML='';
 document.getElementById('btn-next-word').style.display='none';
-setTimeout(()=>inp.focus(),30);
+setTimeout(()=>focusNoJump(inp),30);
 }
 function wordDone(){
 const s=state.word;s.cur=null;s.locked=true;
@@ -583,7 +579,7 @@ drawWord(it);return;
 }
 wordDone();
 }
-function checkWord(){const s=state.word;if(s.locked||!s.cur)return;const user=noTone(document.getElementById('input-word').value);const ans=noTone(s.cur[1]);const ansD=disp(s.cur[1]);const fb=document.getElementById('fb-word');s.locked=true;const inp=document.getElementById('input-word');inp.readOnly=true;const nb=document.getElementById('btn-next-word');nb.style.display='block';bumpTries(s.cur[0]);if(user===ans&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 答啱，已存入識字庫，1秒後自動下一題</div><b>啱晒</b><div>'+s.cur[0]+' = '+ansD+'</div></div></div>';score+=20+streak*2;streak++;addOk(s.cur[0],s.cur[1]);bumpTotal();updateStats();autoNext(newWord);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW · 睇清楚，已存入錯題庫，隔幾題會再出</div><div class="corr">'+s.cur[0]+'</div><div class="py-big">'+ansD+'</div><div>你打咗：'+(user||'(空白)')+'</div><div>睇清楚先撳 Enter / 下一題。</div></div></div>';streak=0;wrongTotal++;addMistake(s.cur[0],s.cur[1],user);pushRetry(retryWord,s.cur);bumpTotal();updateStats();setTimeout(()=>nb.focus(),30);}}
+function checkWord(){const s=state.word;if(s.locked||!s.cur)return;const user=noTone(document.getElementById('input-word').value);const ans=noTone(s.cur[1]);const ansD=disp(s.cur[1]);const fb=document.getElementById('fb-word');s.locked=true;const inp=document.getElementById('input-word');inp.readOnly=true;const nb=document.getElementById('btn-next-word');nb.style.display='block';bumpTries(s.cur[0]);if(user===ans&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 答啱，已存入識字庫，1秒後自動下一題</div><b>啱晒</b><div>'+s.cur[0]+' = '+ansD+'</div></div></div>';score+=20+streak*2;streak++;addOk(s.cur[0],s.cur[1]);bumpTotal();updateStats();autoNext(newWord);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW · 睇清楚，已存入錯題庫，隔幾題會再出</div><div class="corr">'+s.cur[0]+'</div><div class="py-big">'+ansD+'</div><div>你打咗：'+(user||'(空白)')+'</div><div>睇清楚先撳 Enter / 下一題。</div></div></div>';streak=0;wrongTotal++;addMistake(s.cur[0],s.cur[1],user);pushRetry(retryWord,s.cur);bumpTotal();updateStats();setTimeout(()=>focusNoJump(nb),30);}}
 // CHOICE
 function drawChoice(item,opts){
 const s=state.choice;s.cur=item;s.opts=opts;s.locked=false;
@@ -625,7 +621,7 @@ drawChoice(it,makeOpts(it,curatedSingles()));return;
 document.getElementById('qjyut').textContent='完成';
 const fb2=document.getElementById('fb-choice');fb2.className='feedback ok';fb2.innerHTML='呢個難度全部識晒，去識字庫清空可重練。';
 }
-function pickChoice(el,opt){const s=state.choice;if(s.locked)return;s.locked=true;const fb=document.getElementById('fb-choice');const nb=document.getElementById('btn-next-choice');nb.style.display='block';bumpTries(s.cur[0]);const all=[...document.querySelectorAll('#choiceBox .choice')];const ansD=disp(s.cur[1]);if(opt[0]===s.cur[0]){el.classList.add('correct');fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 答啱，已存入識字庫，1秒後自動下一題</div><b>'+ansD+' = '+s.cur[0]+'</b></div></div>';score+=10+streak*2;streak++;addOk(s.cur[0],s.cur[1]);bumpTotal();updateStats();autoNext(newChoice);}else{el.classList.add('wrong');all.forEach((d,i)=>{if(s.opts[i][0]===s.cur[0])d.classList.add('correct');});fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW · 睇清楚，已存入錯題庫，隔幾題會再出</div><div class="corr">'+ansD+' 係 <span style="font-size:30px">'+s.cur[0]+'</span></div><div>你揀咗 '+opt[0]+'。睇清楚先撳 Enter / 下一題。</div></div></div>';streak=0;wrongTotal++;addMistake(s.cur[0],s.cur[1],'揀錯:'+opt[0]);pushRetry(retryChoice,s.cur);bumpTotal();updateStats();setTimeout(()=>nb.focus(),30);}}
+function pickChoice(el,opt){const s=state.choice;if(s.locked)return;s.locked=true;const fb=document.getElementById('fb-choice');const nb=document.getElementById('btn-next-choice');nb.style.display='block';bumpTries(s.cur[0]);const all=[...document.querySelectorAll('#choiceBox .choice')];const ansD=disp(s.cur[1]);if(opt[0]===s.cur[0]){el.classList.add('correct');fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 答啱，已存入識字庫，1秒後自動下一題</div><b>'+ansD+' = '+s.cur[0]+'</b></div></div>';score+=10+streak*2;streak++;addOk(s.cur[0],s.cur[1]);bumpTotal();updateStats();autoNext(newChoice);}else{el.classList.add('wrong');all.forEach((d,i)=>{if(s.opts[i][0]===s.cur[0])d.classList.add('correct');});fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW · 睇清楚，已存入錯題庫，隔幾題會再出</div><div class="corr">'+ansD+' 係 <span style="font-size:30px">'+s.cur[0]+'</span></div><div>你揀咗 '+opt[0]+'。睇清楚先撳 Enter / 下一題。</div></div></div>';streak=0;wrongTotal++;addMistake(s.cur[0],s.cur[1],'揀錯:'+opt[0]);pushRetry(retryChoice,s.cur);bumpTotal();updateStats();setTimeout(()=>focusNoJump(nb),30);}}
 // MIST
 function defaultDir(key){return (key==='miss'||key==='ok'||key==='tries'||key==='t')?-1:1;}
 function parseSort(stored,fallback){let key=fallback,dir=defaultDir(fallback);if(stored){const m=String(stored).match(/^(char|j|lastUser|miss|ok|tries|t)-(asc|desc)$/);if(m){key=m[1];dir=(m[2]==='asc'?1:-1);}else if(stored==='miss'){key='miss';dir=-1;}else if(stored==='ok'){key='ok';dir=-1;}else if(stored==='time'){key='t';dir=-1;}}return {key:key,dir:dir};}
@@ -644,11 +640,11 @@ function setOkSort(key){if(okSort.key===key){okSort.dir*=-1;}else{okSort={key:ke
 function renderMist(){const keys=Object.keys(mistakes);document.getElementById('mistCount').textContent=keys.length;document.getElementById('mistTotal').textContent=keys.length;const tb=document.getElementById('mistTable');tb.innerHTML='';keys.sort((a,b)=>cmpVal(mistVal(mistakes[a],mistSort.key),mistVal(mistakes[b],mistSort.key),mistSort.key)*mistSort.dir);keys.forEach(k=>{const m=mistakes[k];const tr=document.createElement('tr');tr.innerHTML='<td style="font-size:22px;font-weight:900">'+m.c+'</td><td><span class="kbd">'+disp(m.j)+'</span></td><td>'+(m.lastUser||'')+'</td><td>'+m.miss+'</td><td style="white-space:nowrap;font-size:12px;color:var(--muted)">'+fmtT(m.t)+'</td><td><button data-k="'+k+'" class="delBtn">刪除</button></td>';tb.appendChild(tr);});tb.querySelectorAll('.delBtn').forEach(b=>{b.onclick=()=>{delete mistakes[b.dataset.k];saveMist();};});syncSortHeaders();}
 let mistQueue=[],mistIdx=0,mistCur=null,mistLocked=false;
 function startMistPractice(){mistQueue=shuffle(Object.values(mistakes));if(mistQueue.length===0){alert('錯題庫係空嘅，打錯幾題先啦！');return;}mistIdx=0;document.getElementById('mistPracticeBox').style.display='block';nextMist();}
-function nextMist(){if(mistIdx>=mistQueue.length)mistQueue=shuffle(Object.values(mistakes)),mistIdx=0;mistCur=mistQueue[mistIdx++];mistLocked=false;document.getElementById('mistQ').textContent=mistCur.c;document.getElementById('mistQcount').textContent='第'+mistIdx+' / '+mistQueue.length+' · 之前錯咗'+mistCur.miss+'次 · 上次打錯：'+(mistCur.lastUser||'');const inp=document.getElementById('input-mist');inp.value='';inp.readOnly=false;inp.disabled=false;const fb=document.getElementById('fb-mist');fb.className='feedback';fb.innerHTML='';document.getElementById('btn-next-mist').style.display='none';setTimeout(()=>inp.focus(),30);}
-function checkMist(){if(mistLocked||!mistCur)return;const user=noTone(document.getElementById('input-mist').value);const ans=noTone(mistCur.j);const ansD=disp(mistCur.j);const fb=document.getElementById('fb-mist');mistLocked=true;document.getElementById('input-mist').readOnly=true;const nb=document.getElementById('btn-next-mist');nb.style.display='block';bumpTries(mistCur.c);if((user===ans||altOk(mistCur.c,user))&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 1秒後自動下一題</div>啱咗：'+mistCur.c+' = '+ansD+'<br>已存入識字庫，想佢喺錯題消失可以撳下面刪除。'+(user!==ans?'<br><span style="color:var(--muted)">你打咗 '+user+'，都啱 — 多音字，常用讀音係 '+ansD+'</span>':'')+'</div></div>';score+=10;streak++;addOk(mistCur.c,mistCur.j);bumpTotal();updateStats();autoNext(nextMist);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW</div>未啱，正確係 <div class="py-big">'+ansD+'</div>你打咗：'+(user||'(空白)')+'</div></div>';mistCur.miss++;mistakes[mistCur.c].miss++;mistakes[mistCur.c].lastUser=user;mistakes[mistCur.c].t=Date.now();saveMist();streak=0;wrongTotal++;bumpTotal();updateStats();setTimeout(()=>nb.focus(),30);}}
+function nextMist(){if(mistIdx>=mistQueue.length)mistQueue=shuffle(Object.values(mistakes)),mistIdx=0;mistCur=mistQueue[mistIdx++];mistLocked=false;document.getElementById('mistQ').textContent=mistCur.c;document.getElementById('mistQcount').textContent='第'+mistIdx+' / '+mistQueue.length+' · 之前錯咗'+mistCur.miss+'次 · 上次打錯：'+(mistCur.lastUser||'');const inp=document.getElementById('input-mist');inp.value='';inp.readOnly=false;inp.disabled=false;const fb=document.getElementById('fb-mist');fb.className='feedback';fb.innerHTML='';document.getElementById('btn-next-mist').style.display='none';setTimeout(()=>focusNoJump(inp),30);}
+function checkMist(){if(mistLocked||!mistCur)return;const user=noTone(document.getElementById('input-mist').value);const ans=noTone(mistCur.j);const ansD=disp(mistCur.j);const fb=document.getElementById('fb-mist');mistLocked=true;document.getElementById('input-mist').readOnly=true;const nb=document.getElementById('btn-next-mist');nb.style.display='block';bumpTries(mistCur.c);if((user===ans||altOk(mistCur.c,user))&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 1秒後自動下一題</div>啱咗：'+mistCur.c+' = '+ansD+'<br>已存入識字庫，想佢喺錯題消失可以撳下面刪除。'+(user!==ans?'<br><span style="color:var(--muted)">你打咗 '+user+'，都啱 — 多音字，常用讀音係 '+ansD+'</span>':'')+'</div></div>';score+=10;streak++;addOk(mistCur.c,mistCur.j);bumpTotal();updateStats();autoNext(nextMist);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW</div>未啱，正確係 <div class="py-big">'+ansD+'</div>你打咗：'+(user||'(空白)')+'</div></div>';mistCur.miss++;mistakes[mistCur.c].miss++;mistakes[mistCur.c].lastUser=user;mistakes[mistCur.c].t=Date.now();saveMist();streak=0;wrongTotal++;bumpTotal();updateStats();setTimeout(()=>focusNoJump(nb),30);}}
 // NAV
 document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const g=t.dataset.game;['type','word','choice','mistake','correct'].forEach(k=>{document.getElementById('panel-'+k).style.display=(k===g?'block':'none');});};});
-function setDiff(k){if(DIFF_ORDER.indexOf(k)<0)k='easy';clearAuto();curDiff=k;state.type.pool=[];state.type.idx=0;state.choice.pool=[];state.choice.idx=0;state.word.pool=[];state.word.idx=0;retryType=[];retryWord=[];retryChoice=[];recentWord=[];newType();newChoice();newWord();renderSlider();updateSetupLabel();}
+function setDiff(k){if(DIFF_ORDER.indexOf(k)<0)k='easy';clearAuto();curDiff=k;state.type.pool=[];state.type.idx=0;state.choice.pool=[];state.choice.idx=0;state.word.pool=[];state.word.idx=0;retryType=[];retryWord=[];retryChoice=[];recentWord=[];newType();newChoice();newWord();renderSlider();}
 (function(){const s=document.getElementById('diffSlider');if(s)s.addEventListener('input',function(){setDiff(DIFF_ORDER[+s.value]||'easy');});document.querySelectorAll('.slider-labels span').forEach(function(sp){sp.onclick=function(){setDiff(DIFF_ORDER[+sp.dataset.i]||'easy');};});})();
 document.getElementById('btn-check-type').onclick=checkType;
 document.getElementById('btn-next-type').onclick=newType;
@@ -714,17 +710,12 @@ requestAnimationFrame(tick);
 }
 tick();
 })();
-// MOBILE：打字卡置頂，難度+統計收埋入 toggle，預設收起
-function updateSetupLabel(){try{const mt=DIFF_META[curDiff]||DIFF_META.easy;const el=document.getElementById('setupToggle');if(!el)return;const open=!document.querySelector('.wrap').classList.contains('compact');el.innerHTML='<span>'+mt.lv+' '+mt.name+'</span><span class="arr">'+(open?'▴ 收起':'▾ 展開')+'</span>';el.setAttribute('aria-expanded',open?'true':'false');}catch(e){}}
+// MOBILE：打字卡置頂，玩法說明摺疊（難度滑桿長開）
 function updateGuideLabel(){try{const el=document.getElementById('guideToggle');if(!el)return;const hidden=document.querySelector('.wrap').classList.contains('guide-hidden');el.innerHTML='<span>玩法說明</span><span class="arr">'+(hidden?'▾ 展開':'▴ 收起')+'</span>';el.setAttribute('aria-expanded',hidden?'false':'true');}catch(e){}}
 try{
-const st=document.getElementById('setupToggle');
-if(st)st.onclick=function(){document.querySelector('.wrap').classList.toggle('compact');updateSetupLabel();};
 const gt=document.getElementById('guideToggle');
 if(gt)gt.onclick=function(){document.querySelector('.wrap').classList.toggle('guide-hidden');updateGuideLabel();};
-if(matchMedia('(max-width:640px)').matches){document.querySelector('.wrap').classList.add('compact');document.querySelector('.wrap').classList.add('guide-hidden');}
-if(matchMedia('(max-width:640px)').addEventListener)matchMedia('(max-width:640px)').addEventListener('change',function(e){if(!e.matches)document.querySelector('.wrap').classList.remove('compact');});
-updateSetupLabel();
+if(matchMedia('(max-width:640px)').matches){document.querySelector('.wrap').classList.add('guide-hidden');}
 updateGuideLabel();
 }catch(e){}
 // INTERACTIVE FX：光斑跟指針 + 撳掣漣漪 + 題卡微傾（連擊發光靠 updateStats 加 .hot）
