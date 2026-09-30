@@ -47,22 +47,26 @@ header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--surfa
 .theme-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-glow);border-color:var(--ink)}
 .theme-dot{width:12px;height:12px;border-radius:50%;background:var(--ink);box-shadow:0 0 10px rgba(127,127,135,.9)}
 .wrap{max-width:1020px;margin:0 auto;padding:20px 16px 80px;position:relative;z-index:1}
-.diff-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:16px 0}
-@media(max-width:1100px){.diff-row{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:860px){.diff-row{grid-template-columns:repeat(2,1fr)}}
-.diff{position:relative;border:1px solid var(--line);border-radius:var(--radius);padding:14px 13px;cursor:pointer;background:var(--surface);transition:all .24s ease;overflow:hidden}
-.diff::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:999px;background:var(--line);transition:all .24s}
-.diff:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--ink)}
-.diff:hover::before{background:var(--ink);box-shadow:0 0 12px rgba(127,127,135,.7)}
-.diff.active{border-color:var(--ink);box-shadow:var(--shadow-glow);background:var(--surface2)}
-.diff.active::before{background:var(--ink);box-shadow:0 0 14px currentColor}
-.diff b{display:block;font-size:14px}.diff .lv{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:800}.diff small{color:var(--muted);font-size:12px;line-height:1.5;display:block;margin-top:4px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
-.stat{border:1px solid var(--line);border-radius:14px;padding:12px 10px;text-align:center;background:var(--surface);transition:all .22s}
-.stat:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
-.stat .k{font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:800}
-.stat .v{font-size:24px;font-weight:900;margin-top:2px;font-variant-numeric:tabular-nums}
+.diff-row{margin:16px 0}
+.slider-wrap{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:14px 18px 12px;box-shadow:var(--shadow-sm)}
+.slider-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.slider-name{font-weight:900;font-size:16px;white-space:nowrap}
+.slider-name .lv{font-size:10px;letter-spacing:1.8px;color:var(--muted);font-weight:800;margin-right:6px}
+.slider-info{color:var(--muted);font-size:12px;text-align:right}
+#diffSlider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--ink) var(--p,0%),var(--line) var(--p,0%));outline:none;cursor:pointer;margin:0}
+#diffSlider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid var(--ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--ink) 18%,transparent),0 0 18px rgba(127,127,135,.6);cursor:grab}
+#diffSlider::-webkit-slider-thumb:active{cursor:grabbing;box-shadow:0 0 0 6px color-mix(in srgb,var(--ink) 22%,transparent),0 0 26px rgba(127,127,135,.8)}
+#diffSlider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--surface);border:2px solid var(--ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--ink) 18%,transparent),0 0 18px rgba(127,127,135,.6);cursor:grab}
+#diffSlider::-moz-range-track{height:6px;border-radius:99px;background:var(--line)}
+#diffSlider::-moz-range-progress{height:6px;border-radius:99px;background:var(--ink)}
+.slider-labels{display:flex;justify-content:space-between;margin-top:8px}
+.slider-labels span{font-size:11px;font-weight:800;color:var(--muted);cursor:pointer;padding:2px 4px;transition:color .2s}
+.slider-labels span.on{color:var(--ink);text-shadow:0 0 12px rgba(127,127,135,.6)}
+.stats{display:flex;align-items:stretch;margin:12px 0;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-sm);overflow:hidden}
+.stat-cell{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;min-width:0}
+.stat-cell+.stat-cell{border-left:1px solid var(--line)}
+.stats .k{font-size:11px;letter-spacing:1px;color:var(--muted);font-weight:800;white-space:nowrap}
+.stats .v{font-size:22px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
 .card{border:1px solid var(--line);border-radius:22px;overflow:hidden;margin-top:14px;background:var(--surface);box-shadow:var(--shadow-md);animation:rise .4s ease}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .progress{height:6px;background:var(--line)}.progress>div{height:100%;background:var(--ink);width:0%;transition:width .35s ease;box-shadow:0 0 12px rgba(127,127,135,.8)}
@@ -121,18 +125,22 @@ th.sorted{color:var(--ink)}
 .delBtn:hover{border-color:var(--ink);box-shadow:var(--shadow-md)}
 #mistPracticeBox{border:1px dashed var(--ink) !important;border-radius:16px !important;background:var(--surface2)}
 footer{color:var(--muted);text-align:center;padding:24px;font-size:12px;letter-spacing:.5px}
-#setupToggle{display:none}
+#setupToggle,#guideToggle{display:none}
 @media(max-width:640px){
 .wrap{display:flex;flex-direction:column}
 .wrap>.card{order:1}
 #setupToggle{order:2;display:flex;align-items:center;justify-content:space-between;width:100%;margin:14px 0 0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;font-weight:850;font-size:14px;cursor:pointer}
 #setupToggle:active{transform:scale(.99)}
 #setupToggle .arr{color:var(--muted)}
+#guideToggle{order:5;display:flex;align-items:center;justify-content:space-between;width:100%;margin:14px 0 0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;font-weight:850;font-size:14px;cursor:pointer}
+#guideToggle:active{transform:scale(.99)}
+#guideToggle .arr{color:var(--muted)}
 #diffRow{order:3}
 .stats{order:4}
-.guide{order:5}
-.wrap>footer{order:6}
-.wrap.compact #diffRow,.wrap.compact .stats{display:none}
+.guide{order:6}
+.wrap>footer{order:7}
+.wrap.guide-hidden .guide{display:none}
+.wrap.compact #diffRow{display:none}
 .card-inner{padding:16px 14px}
 .q-char{font-size:60px;margin:8px 0 4px}
 .q-word{font-size:36px;margin:8px 0 4px}
@@ -141,8 +149,8 @@ footer{color:var(--muted);text-align:center;padding:24px;font-size:12px;letter-s
 input[type=text]{font-size:18px;padding:12px 14px}
 .btn-row{gap:8px;margin-top:10px}
 .btn{padding:12px 10px;min-width:0;font-size:14px}
-.stat{padding:9px 6px}.stat .v{font-size:20px}
-.diff{padding:10px 9px}.diff small{font-size:11px}
+.stat-cell{padding:8px 2px}.stats .v{font-size:18px}.stats .k{font-size:10px}
+.slider-wrap{padding:12px 14px 10px}.slider-name{font-size:15px}.slider-info{font-size:11px}
 .feedback{padding:12px}.feedback .py-big{font-size:26px}
 .big-mark{width:44px;height:44px}
 .choices{gap:8px;margin-top:10px}.choice{padding:14px;font-size:26px}
@@ -181,8 +189,7 @@ input[type=text]:focus{box-shadow:0 0 0 3px rgba(127,127,135,.28),0 0 26px rgba(
 .btn-primary{box-shadow:0 6px 0 rgba(127,127,135,.35),0 14px 32px rgba(0,0,0,.18),0 0 24px rgba(127,127,135,.3)}
 .btn-primary:hover{box-shadow:0 8px 0 rgba(127,127,135,.35),0 0 26px rgba(127,127,135,.55),0 0 40px rgba(127,127,135,.35),0 18px 44px rgba(0,0,0,.2)}
 .btn-ghost:hover{box-shadow:var(--shadow-md),0 0 20px rgba(127,127,135,.3)}
-.stat .v{text-shadow:0 0 16px rgba(127,127,135,.4)}
-.diff.active{box-shadow:var(--shadow-glow),0 0 22px rgba(127,127,135,.25)}
+.stats .v{text-shadow:0 0 16px rgba(127,127,135,.4)}
 .choice.correct{box-shadow:var(--shadow-md),0 0 26px rgba(127,127,135,.45)}
 .feedback.ok{box-shadow:var(--shadow-md),0 0 28px rgba(127,127,135,.3)}
 .feedback.no{box-shadow:var(--shadow-md),0 0 28px rgba(127,127,135,.22)}
@@ -200,17 +207,15 @@ input[type=text]:focus{box-shadow:0 0 0 3px rgba(127,127,135,.28),0 0 26px rgba(
 .btn::after,.progress>div::after,.q-jyut::after{display:none!important}
 }
 /* INTERACTIVE GLOW：指針光斑 + 漣漪 + 連擊發光 */
-.card,.diff,.choice,.stat{--px:50%;--py:50%}
+.card,.choice,.stats{--px:50%;--py:50%}
 .card{background:radial-gradient(340px circle at var(--px) var(--py),rgba(127,127,135,.13),transparent 62%),var(--surface)}
-.diff{background:radial-gradient(220px circle at var(--px) var(--py),rgba(127,127,135,.12),transparent 65%),var(--surface)}
-.diff.active{background:radial-gradient(220px circle at var(--px) var(--py),rgba(127,127,135,.12),transparent 65%),var(--surface2)}
 .choice{background:radial-gradient(200px circle at var(--px) var(--py),rgba(127,127,135,.14),transparent 65%),var(--surface)}
 .choice.correct{background:radial-gradient(200px circle at var(--px) var(--py),rgba(127,127,135,.14),transparent 65%),var(--ok-bg)}
-.stat{background:radial-gradient(180px circle at var(--px) var(--py),rgba(127,127,135,.1),transparent 65%),var(--surface)}
+.stats{background:radial-gradient(400px circle at var(--px) var(--py),rgba(127,127,135,.1),transparent 65%),var(--surface)}
 .ripple{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--ink) 28%,transparent);transform:scale(0);opacity:.9;animation:rip-go .55s ease-out forwards;pointer-events:none;z-index:2}
 @keyframes rip-go{to{transform:scale(1);opacity:0}}
-.stat.hot{border-color:var(--ink)}
-.stat.hot .v{animation:hot-pulse 1s ease-in-out infinite;text-shadow:0 0 18px rgba(127,127,135,.85),0 0 48px rgba(127,127,135,.5)}
+.stats.hot{border-color:var(--ink)}
+.stats.hot #streak{animation:hot-pulse 1s ease-in-out infinite;text-shadow:0 0 18px rgba(127,127,135,.85),0 0 48px rgba(127,127,135,.5)}
 @keyframes hot-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 </style>
 </head>
@@ -230,18 +235,18 @@ input[type=text]:focus{box-shadow:0 0 0 3px rgba(127,127,135,.28),0 0 26px rgba(
 
 <button id="setupToggle" aria-expanded="false"><span>LV.1 初級</span><span class="arr">▾</span></button>
 <div class="diff-row" id="diffRow">
-<div class="diff active" data-diff="easy"><span class="lv">LV.1</span><b>初級</b><small>真常用字 · 單字約3千 / 詞約2.1萬</small></div>
-<div class="diff" data-diff="medium"><span class="lv">LV.2</span><b>中級</b><small>次常用字 · 單字約2.5千 / 詞約3.2萬</small></div>
-<div class="diff" data-diff="hard"><span class="lv">LV.3</span><b>高級</b><small>難字口語字 · 單字約1.3千 / 詞約2.1萬</small></div>
-<div class="diff" data-diff="hell"><span class="lv">LV.4</span><b>地獄級</b><small>罕字 · 單字約2.0萬 / 詞約2.5萬</small></div>
-<div class="diff" data-diff="mix"><span class="lv">MIX</span><b>混合</b><small>單字2.7萬 + 詞約9.9萬隨機</small></div>
+<div class="slider-wrap">
+<div class="slider-top"><div class="slider-name" id="sliderName"><span class="lv">LV.1</span> 初級</div><div class="slider-info" id="sliderInfo">載入中</div></div>
+<input type="range" id="diffSlider" min="0" max="4" step="1" value="0" aria-label="選擇難度">
+<div class="slider-labels"><span data-i="0">初級</span><span data-i="1">中級</span><span data-i="2">高級</span><span data-i="3">地獄</span><span data-i="4">混合</span></div>
+</div>
 </div>
 
 <div class="stats">
-<div class="stat"><div class="k">SCORE 分數</div><div class="v" id="score">0</div></div>
-<div class="stat"><div class="k">STREAK 連擊</div><div class="v" id="streak">0</div></div>
-<div class="stat"><div class="k">TOTAL 已做</div><div class="v" id="qnum">0</div></div>
-<div class="stat"><div class="k">WRONG 錯題</div><div class="v" id="wrongCount">0</div></div>
+<div class="stat-cell"><div class="k">分數</div><div class="v" id="score">0</div></div>
+<div class="stat-cell"><div class="k">連擊</div><div class="v" id="streak">0</div></div>
+<div class="stat-cell"><div class="k">已做</div><div class="v" id="qnum">0</div></div>
+<div class="stat-cell"><div class="k">錯題</div><div class="v" id="wrongCount">0</div></div>
 </div>
 
 <!-- GAME 1 -->
@@ -325,6 +330,7 @@ input[type=text]:focus{box-shadow:0 0 0 3px rgba(127,127,135,.28),0 0 26px rgba(
 </div>
 </div>
 
+<button id="guideToggle" aria-expanded="false"><span>玩法說明</span><span class="arr">▾ 展開</span></button>
 <div class="guide">
 <b>粵拼玩法（唔使聲調）：</b> 只打英文字母就得。例如 <span class="kbd">nei</span> = 你，<span class="kbd">luk</span> = 綠，<span class="kbd">sik faan</span> = 食飯，<span class="kbd">m goi</span> = 唔該。數字聲調會自動忽略。唔使大細楷，空格多少都唔計。
 <br><br><b>難度說明：</b>打字 / 四選一用單字（初級約3千真常用字，中級約2.5千次常用，高級約1.3千難字，地獄約2萬罕字），詞語模式用詞（每級約2–3萬題）。混合 = 全部隨機（單字2.7萬 + 詞約9.9萬）：<span id="bigCount">載入中</span>。
@@ -379,6 +385,22 @@ if(window.BIG_WORDS)BIG_WORD=window.BIG_WORDS.map(s=>{const i=s.indexOf('|');ret
 // 另建 ALTREAD（字→全部詞庫見過嘅讀音），多音字打邊個啱讀音都收
 // 詞語：含口語標記→高級；≤3字且全由常用字組成→初級；≥4字→地獄；3字→高級；其餘（2字非常用）→中級
 let LV_S={easy:[],medium:[],hard:[],hell:[]}, ALL_S=[], ALTREAD=new Map(), PRI=new Map(), AUTO={easy:[],medium:[],hard:[],hell:[]}, AUTO_W={easy:[],medium:[],hard:[],hell:[]}, ALL_MIX_W=[];
+const DIFF_ORDER=['easy','medium','hard','hell','mix'];
+const DIFF_META={easy:{lv:'LV.1',name:'初級',tag:'日常常用',singles:0,words:0},medium:{lv:'LV.2',name:'中級',tag:'生活進階',singles:0,words:0},hard:{lv:'LV.3',name:'高級',tag:'地道口語',singles:0,words:0},hell:{lv:'LV.4',name:'地獄級',tag:'罕字靚字',singles:0,words:0},mix:{lv:'MIX',name:'混合',tag:'包羅萬有',singles:0,words:0}};
+function fmtN(n){return n>=10000?(n/10000).toFixed(1)+'萬':String(n);}
+function renderSlider(){
+const s=document.getElementById('diffSlider');if(!s)return;
+let idx=DIFF_ORDER.indexOf(curDiff);if(idx<0)idx=0;
+if(document.activeElement!==s)s.value=idx;
+s.style.setProperty('--p',(idx/(DIFF_ORDER.length-1)*100).toFixed(1)+'%');
+const mt=DIFF_META[DIFF_ORDER[idx]];
+s.setAttribute('aria-valuetext',mt.name);
+const nm=document.getElementById('sliderName'),inf=document.getElementById('sliderInfo');
+if(nm)nm.innerHTML='<span class="lv">'+mt.lv+'</span> '+mt.name;
+if(inf)inf.textContent=(mt.tag?mt.tag+' · ':'')+'單字約'+fmtN(mt.singles)+' / 詞約'+fmtN(mt.words);
+const labs=document.querySelectorAll('.slider-labels span');
+labs.forEach(function(sp,si){sp.classList.toggle('on',si===idx);});
+}
 (function buildAuto(){
 try{
 const S_easy=new Set(DB.easy.map(function(x){return x[0];}));
@@ -447,12 +469,9 @@ for(const k of ['easy','medium','hard','hell']){AUTO_W[k]=AUTO[k].filter(functio
 ALL_MIX_W=[...AUTO_W.easy,...AUTO_W.medium,...AUTO_W.hard,...AUTO_W.hell];
 function fmt(n){return n>=10000?(n/10000).toFixed(1)+'萬':String(n);}
 try{
-const m={easy:document.querySelector('.diff[data-diff="easy"] small'),medium:document.querySelector('.diff[data-diff="medium"] small'),hard:document.querySelector('.diff[data-diff="hard"] small'),hell:document.querySelector('.diff[data-diff="hell"] small'),mix:document.querySelector('.diff[data-diff="mix"] small')};
-if(m.easy)m.easy.textContent='日常常用 · 單字約'+fmt(LV_S.easy.length)+' / 詞約'+fmt(AUTO_W.easy.length);
-if(m.medium)m.medium.textContent='生活進階 · 單字約'+fmt(LV_S.medium.length)+' / 詞約'+fmt(AUTO_W.medium.length);
-if(m.hard)m.hard.textContent='地道口語 · 單字約'+fmt(LV_S.hard.length)+' / 詞約'+fmt(AUTO_W.hard.length);
-if(m.hell)m.hell.textContent='罕字靚字 · 單字約'+fmt(LV_S.hell.length)+' / 詞約'+fmt(AUTO_W.hell.length);
-if(m.mix)m.mix.textContent='包羅萬有 · 單字'+fmt(ALL_S.length)+' + 詞'+fmt(ALL_MIX_W.length)+'隨機';
+for(const k of ['easy','medium','hard','hell']){DIFF_META[k].singles=LV_S[k].length;DIFF_META[k].words=AUTO_W[k].length;}
+DIFF_META.mix.singles=ALL_S.length;DIFF_META.mix.words=ALL_MIX_W.length;
+try{renderSlider();}catch(e2){}
 const bc=document.getElementById('bigCount');
 if(bc)bc.textContent='單字初約'+fmt(LV_S.easy.length)+' / 中約'+fmt(LV_S.medium.length)+' / 高約'+fmt(LV_S.hard.length)+' / 地獄約'+fmt(LV_S.hell.length)+'；詞語初約'+fmt(AUTO_W.easy.length)+' / 中約'+fmt(AUTO_W.medium.length)+' / 高約'+fmt(AUTO_W.hard.length)+' / 地獄約'+fmt(AUTO_W.hell.length);
 }catch(e){}
@@ -462,7 +481,7 @@ function curatedSingles(){if(!LV_S.easy.length){if(curDiff==='mix')return [...DB
 function getPool(){return curatedSingles();}
 function wordPool(){if(!AUTO_W.easy.length){return DB.words;}if(curDiff==='mix')return ALL_MIX_W;return AUTO_W[curDiff]||AUTO_W.easy;}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function updateStats(){document.getElementById('score').textContent=score;document.getElementById('streak').textContent=streak;document.getElementById('wrongCount').textContent=wrongTotal;const q=document.getElementById('qnum');if(q)q.textContent=totalQ;try{document.getElementById('streak').closest('.stat').classList.toggle('hot',streak>=5);}catch(e){}}
+function updateStats(){document.getElementById('score').textContent=score;document.getElementById('streak').textContent=streak;document.getElementById('wrongCount').textContent=wrongTotal;const q=document.getElementById('qnum');if(q)q.textContent=totalQ;try{document.getElementById('streak').closest('.stats').classList.toggle('hot',streak>=5);}catch(e){}}
 let totalQ=0;try{totalQ=parseInt(localStorage.getItem('hktype_total')||'0',10)||0;}catch(e){totalQ=0;}
 function bumpTotal(){totalQ++;try{localStorage.setItem('hktype_total',String(totalQ));}catch(e){}const q=document.getElementById('qnum');if(q)q.textContent=totalQ;}
 function addMistake(c,j,user){const k=c;const dj=disp(j);if(!mistakes[k])mistakes[k]={c,j:dj,miss:0,lastUser:''};mistakes[k].miss++;mistakes[k].lastUser=noTone(user);mistakes[k].j=dj;mistakes[k].t=Date.now();saveMist();}
@@ -629,7 +648,8 @@ function nextMist(){if(mistIdx>=mistQueue.length)mistQueue=shuffle(Object.values
 function checkMist(){if(mistLocked||!mistCur)return;const user=noTone(document.getElementById('input-mist').value);const ans=noTone(mistCur.j);const ansD=disp(mistCur.j);const fb=document.getElementById('fb-mist');mistLocked=true;document.getElementById('input-mist').readOnly=true;const nb=document.getElementById('btn-next-mist');nb.style.display='block';bumpTries(mistCur.c);if((user===ans||altOk(mistCur.c,user))&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 1秒後自動下一題</div>啱咗：'+mistCur.c+' = '+ansD+'<br>已存入識字庫，想佢喺錯題消失可以撳下面刪除。'+(user!==ans?'<br><span style="color:var(--muted)">你打咗 '+user+'，都啱 — 多音字，常用讀音係 '+ansD+'</span>':'')+'</div></div>';score+=10;streak++;addOk(mistCur.c,mistCur.j);bumpTotal();updateStats();autoNext(nextMist);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW</div>未啱，正確係 <div class="py-big">'+ansD+'</div>你打咗：'+(user||'(空白)')+'</div></div>';mistCur.miss++;mistakes[mistCur.c].miss++;mistakes[mistCur.c].lastUser=user;mistakes[mistCur.c].t=Date.now();saveMist();streak=0;wrongTotal++;bumpTotal();updateStats();setTimeout(()=>nb.focus(),30);}}
 // NAV
 document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const g=t.dataset.game;['type','word','choice','mistake','correct'].forEach(k=>{document.getElementById('panel-'+k).style.display=(k===g?'block':'none');});};});
-document.querySelectorAll('.diff').forEach(d=>{d.onclick=()=>{clearAuto();document.querySelectorAll('.diff').forEach(x=>x.classList.remove('active'));d.classList.add('active');curDiff=d.dataset.diff;state.type.pool=[];state.type.idx=0;state.choice.pool=[];state.choice.idx=0;state.word.pool=[];state.word.idx=0;retryType=[];retryWord=[];retryChoice=[];recentWord=[];newType();newChoice();newWord();updateSetupLabel();};});
+function setDiff(k){if(DIFF_ORDER.indexOf(k)<0)k='easy';clearAuto();curDiff=k;state.type.pool=[];state.type.idx=0;state.choice.pool=[];state.choice.idx=0;state.word.pool=[];state.word.idx=0;retryType=[];retryWord=[];retryChoice=[];recentWord=[];newType();newChoice();newWord();renderSlider();updateSetupLabel();}
+(function(){const s=document.getElementById('diffSlider');if(s)s.addEventListener('input',function(){setDiff(DIFF_ORDER[+s.value]||'easy');});document.querySelectorAll('.slider-labels span').forEach(function(sp){sp.onclick=function(){setDiff(DIFF_ORDER[+sp.dataset.i]||'easy');};});})();
 document.getElementById('btn-check-type').onclick=checkType;
 document.getElementById('btn-next-type').onclick=newType;
 document.getElementById('btn-skip-type').onclick=()=>{if(state.type.cur)addMistake(state.type.cur[0],state.type.cur[1],'(跳過)');newType();};
@@ -695,21 +715,25 @@ requestAnimationFrame(tick);
 tick();
 })();
 // MOBILE：打字卡置頂，難度+統計收埋入 toggle，預設收起
-function updateSetupLabel(){try{const a=document.querySelector('.diff.active');const el=document.getElementById('setupToggle');if(!a||!el)return;const lv=a.querySelector('.lv'),b=a.querySelector('b');const open=!document.querySelector('.wrap').classList.contains('compact');el.innerHTML='<span>'+(lv?lv.textContent:'')+' '+(b?b.textContent:'')+'</span><span class="arr">'+(open?'▴ 收起':'▾ 展開')+'</span>';el.setAttribute('aria-expanded',open?'true':'false');}catch(e){}}
+function updateSetupLabel(){try{const mt=DIFF_META[curDiff]||DIFF_META.easy;const el=document.getElementById('setupToggle');if(!el)return;const open=!document.querySelector('.wrap').classList.contains('compact');el.innerHTML='<span>'+mt.lv+' '+mt.name+'</span><span class="arr">'+(open?'▴ 收起':'▾ 展開')+'</span>';el.setAttribute('aria-expanded',open?'true':'false');}catch(e){}}
+function updateGuideLabel(){try{const el=document.getElementById('guideToggle');if(!el)return;const hidden=document.querySelector('.wrap').classList.contains('guide-hidden');el.innerHTML='<span>玩法說明</span><span class="arr">'+(hidden?'▾ 展開':'▴ 收起')+'</span>';el.setAttribute('aria-expanded',hidden?'false':'true');}catch(e){}}
 try{
 const st=document.getElementById('setupToggle');
 if(st)st.onclick=function(){document.querySelector('.wrap').classList.toggle('compact');updateSetupLabel();};
-if(matchMedia('(max-width:640px)').matches){document.querySelector('.wrap').classList.add('compact');}
+const gt=document.getElementById('guideToggle');
+if(gt)gt.onclick=function(){document.querySelector('.wrap').classList.toggle('guide-hidden');updateGuideLabel();};
+if(matchMedia('(max-width:640px)').matches){document.querySelector('.wrap').classList.add('compact');document.querySelector('.wrap').classList.add('guide-hidden');}
 if(matchMedia('(max-width:640px)').addEventListener)matchMedia('(max-width:640px)').addEventListener('change',function(e){if(!e.matches)document.querySelector('.wrap').classList.remove('compact');});
 updateSetupLabel();
+updateGuideLabel();
 }catch(e){}
 // INTERACTIVE FX：光斑跟指針 + 撳掣漣漪 + 題卡微傾（連擊發光靠 updateStats 加 .hot）
 (function(){
 try{
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
 let px=0,py=0,raf=0,tg=null;
-document.addEventListener('pointermove',function(e){px=e.clientX;py=e.clientY;tg=e.target&&e.target.closest?e.target.closest('.card,.diff,.choice,.stat'):null;if(raf)return;raf=requestAnimationFrame(function(){raf=0;if(!tg)return;const r=tg.getBoundingClientRect();tg.style.setProperty('--px',((px-r.left)/r.width*100).toFixed(1)+'%');tg.style.setProperty('--py',((py-r.top)/r.height*100).toFixed(1)+'%');});},{passive:true});
-document.addEventListener('pointerdown',function(e){const t=e.target&&e.target.closest?e.target.closest('.btn,.tab,.diff,.choice'):null;if(!t||!t.getBoundingClientRect)return;const r=t.getBoundingClientRect();const d=Math.max(r.width,r.height)*2.2;const s=document.createElement('span');s.className='ripple';s.style.width=s.style.height=d+'px';s.style.left=(e.clientX-r.left-d/2)+'px';s.style.top=(e.clientY-r.top-d/2)+'px';t.appendChild(s);s.addEventListener('animationend',function(){s.remove();});});
+document.addEventListener('pointermove',function(e){px=e.clientX;py=e.clientY;tg=e.target&&e.target.closest?e.target.closest('.card,.choice,.stats'):null;if(raf)return;raf=requestAnimationFrame(function(){raf=0;if(!tg)return;const r=tg.getBoundingClientRect();tg.style.setProperty('--px',((px-r.left)/r.width*100).toFixed(1)+'%');tg.style.setProperty('--py',((py-r.top)/r.height*100).toFixed(1)+'%');});},{passive:true});
+document.addEventListener('pointerdown',function(e){const t=e.target&&e.target.closest?e.target.closest('.btn,.tab,.choice'):null;if(!t||!t.getBoundingClientRect)return;const r=t.getBoundingClientRect();const d=Math.max(r.width,r.height)*2.2;const s=document.createElement('span');s.className='ripple';s.style.width=s.style.height=d+'px';s.style.left=(e.clientX-r.left-d/2)+'px';s.style.top=(e.clientY-r.top-d/2)+'px';t.appendChild(s);s.addEventListener('animationend',function(){s.remove();});});
 if(matchMedia('(hover:hover) and (pointer:fine)').matches){document.querySelectorAll('#panel-type,#panel-word,#panel-choice').forEach(function(card){card.addEventListener('pointermove',function(e){const r=card.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform='perspective(900px) rotateX('+(-y*5).toFixed(2)+'deg) rotateY('+(x*5).toFixed(2)+'deg)';});card.addEventListener('pointerleave',function(){card.style.transform='';});});}
 }catch(e){}
 })();
