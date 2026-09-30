@@ -146,6 +146,14 @@ input[type=text]{font-size:18px;padding:12px 14px}
 .big-mark{width:44px;height:44px}
 .choices{gap:8px;margin-top:10px}.choice{padding:14px;font-size:26px}
 table{font-size:13px}th,td{padding:8px 6px}
+body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.wrap{flex:1;width:100%}
+footer{position:sticky;bottom:0;z-index:5;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.nav{gap:10px;padding:10px 12px}
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;width:100%;margin-left:0}
+.tab,.theme-btn{padding:9px 0;font-size:11px;font-weight:800;letter-spacing:0;justify-content:center;text-align:center;white-space:nowrap;min-width:0;text-overflow:ellipsis}
+.tab .idx{display:none}
+.theme-dot{width:8px;height:8px;flex:none}
 }
 </style>
 </head>
