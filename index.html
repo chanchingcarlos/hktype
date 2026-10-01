@@ -213,6 +213,7 @@ input[type=text]:focus{box-shadow:0 0 0 3px rgba(127,127,135,.28),0 0 26px rgba(
 .stats.hot{border-color:var(--ink)}
 .stats.hot #streak{animation:hot-pulse 1s ease-in-out infinite;text-shadow:0 0 18px rgba(127,127,135,.85),0 0 48px rgba(127,127,135,.5)}
 @keyframes hot-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.card-inner{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -383,6 +384,24 @@ let LV_S={easy:[],medium:[],hard:[],hell:[]}, ALL_S=[], ALTREAD=new Map(), PRI=n
 const DIFF_ORDER=['easy','medium','hard','hell','mix'];
 const DIFF_META={easy:{lv:'LV.1',name:'初級',tag:'日常常用',singles:0,words:0},medium:{lv:'LV.2',name:'中級',tag:'生活進階',singles:0,words:0},hard:{lv:'LV.3',name:'高級',tag:'地道口語',singles:0,words:0},hell:{lv:'LV.4',name:'地獄級',tag:'罕字靚字',singles:0,words:0},mix:{lv:'MIX',name:'混合',tag:'包羅萬有',singles:0,words:0}};
 function fmtN(n){return n>=10000?(n/10000).toFixed(1)+'萬':String(n);}
+let sliderBaseInfo='';
+function modeProgress(g){
+try{
+const pool=(g==='word')?wordPool():curatedSingles();
+if(!pool||!pool.length)return{n:0,total:0,p:0};
+let n=0;for(const it of pool){if(okWords[it[0]])n++;}
+return{n:n,total:pool.length,p:n/pool.length};
+}catch(e){return{n:0,total:0,p:0};}
+}
+function renderWater(){
+try{
+const vis=(function(){try{return visiblePanel();}catch(e){return 'type';}})();
+const r=(vis==='word')?modeProgress('word'):modeProgress('type');
+const inf=document.getElementById('sliderInfo');if(!inf)return;
+const pc=r.p*100,ps=(pc>=10?Math.round(pc):Math.round(pc*10)/10);
+inf.textContent=sliderBaseInfo+(r.total?(' · 已完成 '+ps+'%（'+r.n+'/'+r.total+'）'):'');
+}catch(e){}
+}
 function renderSlider(){
 const s=document.getElementById('diffSlider');if(!s)return;
 let idx=DIFF_ORDER.indexOf(curDiff);if(idx<0)idx=0;
@@ -392,7 +411,8 @@ const mt=DIFF_META[DIFF_ORDER[idx]];
 s.setAttribute('aria-valuetext',mt.name);
 const nm=document.getElementById('sliderName'),inf=document.getElementById('sliderInfo');
 if(nm)nm.innerHTML='<span class="lv">'+mt.lv+'</span> '+mt.name;
-if(inf)inf.textContent=(mt.tag?mt.tag+' · ':'')+'單字約'+fmtN(mt.singles)+' / 詞約'+fmtN(mt.words);
+sliderBaseInfo=(mt.tag?mt.tag+' · ':'')+'單字約'+fmtN(mt.singles)+' / 詞約'+fmtN(mt.words);
+renderWater();
 const labs=document.querySelectorAll('.slider-labels span');
 labs.forEach(function(sp,si){sp.classList.toggle('on',si===idx);});
 }
@@ -476,7 +496,7 @@ function curatedSingles(){if(!LV_S.easy.length){if(curDiff==='mix')return [...DB
 function getPool(){return curatedSingles();}
 function wordPool(){if(!AUTO_W.easy.length){return DB.words;}if(curDiff==='mix')return ALL_MIX_W;return AUTO_W[curDiff]||AUTO_W.easy;}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function updateStats(){document.getElementById('score').textContent=score;document.getElementById('streak').textContent=streak;document.getElementById('wrongCount').textContent=wrongTotal;const q=document.getElementById('qnum');if(q)q.textContent=totalQ;try{document.getElementById('streak').closest('.stats').classList.toggle('hot',streak>=5);}catch(e){}}
+function updateStats(){document.getElementById('score').textContent=score;document.getElementById('streak').textContent=streak;document.getElementById('wrongCount').textContent=wrongTotal;const q=document.getElementById('qnum');if(q)q.textContent=totalQ;try{document.getElementById('streak').closest('.stats').classList.toggle('hot',streak>=5);}catch(e){}try{renderWater();}catch(e){}}
 let totalQ=0;try{totalQ=parseInt(localStorage.getItem('hktype_total')||'0',10)||0;}catch(e){totalQ=0;}
 function bumpTotal(){totalQ++;try{localStorage.setItem('hktype_total',String(totalQ));}catch(e){}const q=document.getElementById('qnum');if(q)q.textContent=totalQ;}
 function addMistake(c,j,user){const k=c;const dj=disp(j);if(!mistakes[k])mistakes[k]={c,j:dj,miss:0,lastUser:''};mistakes[k].miss++;mistakes[k].lastUser=noTone(user);mistakes[k].j=dj;mistakes[k].t=Date.now();saveMist();}
@@ -643,7 +663,7 @@ function startMistPractice(){mistQueue=shuffle(Object.values(mistakes));if(mistQ
 function nextMist(){if(mistIdx>=mistQueue.length)mistQueue=shuffle(Object.values(mistakes)),mistIdx=0;mistCur=mistQueue[mistIdx++];mistLocked=false;document.getElementById('mistQ').textContent=mistCur.c;document.getElementById('mistQcount').textContent='第'+mistIdx+' / '+mistQueue.length+' · 之前錯咗'+mistCur.miss+'次 · 上次打錯：'+(mistCur.lastUser||'');const inp=document.getElementById('input-mist');inp.value='';inp.readOnly=false;inp.disabled=false;const fb=document.getElementById('fb-mist');fb.className='feedback';fb.innerHTML='';document.getElementById('btn-next-mist').style.display='none';setTimeout(()=>focusNoJump(inp),30);}
 function checkMist(){if(mistLocked||!mistCur)return;const user=noTone(document.getElementById('input-mist').value);const ans=noTone(mistCur.j);const ansD=disp(mistCur.j);const fb=document.getElementById('fb-mist');mistLocked=true;document.getElementById('input-mist').readOnly=true;const nb=document.getElementById('btn-next-mist');nb.style.display='block';bumpTries(mistCur.c);if((user===ans||altOk(mistCur.c,user))&&user!==''){fb.className='feedback ok';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✓</div><div><div class="tag">CORRECT · 1秒後自動下一題</div>啱咗：'+mistCur.c+' = '+ansD+'<br>已存入識字庫，想佢喺錯題消失可以撳下面刪除。'+(user!==ans?'<br><span style="color:var(--muted)">你打咗 '+user+'，都啱 — 多音字，常用讀音係 '+ansD+'</span>':'')+'</div></div>';score+=10;streak++;addOk(mistCur.c,mistCur.j);bumpTotal();updateStats();autoNext(nextMist);}else{fb.className='feedback no';fb.innerHTML='<div class="fb-wrap"><div class="big-mark">✕</div><div><div class="tag">REVIEW</div>未啱，正確係 <div class="py-big">'+ansD+'</div>你打咗：'+(user||'(空白)')+'</div></div>';mistCur.miss++;mistakes[mistCur.c].miss++;mistakes[mistCur.c].lastUser=user;mistakes[mistCur.c].t=Date.now();saveMist();streak=0;wrongTotal++;bumpTotal();updateStats();setTimeout(()=>focusNoJump(nb),30);}}
 // NAV
-document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const g=t.dataset.game;['type','word','choice','mistake','correct'].forEach(k=>{document.getElementById('panel-'+k).style.display=(k===g?'block':'none');});};});
+document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const g=t.dataset.game;['type','word','choice','mistake','correct'].forEach(k=>{document.getElementById('panel-'+k).style.display=(k===g?'block':'none');});try{renderWater();}catch(e){}};});
 function setDiff(k){if(DIFF_ORDER.indexOf(k)<0)k='easy';clearAuto();curDiff=k;state.type.pool=[];state.type.idx=0;state.choice.pool=[];state.choice.idx=0;state.word.pool=[];state.word.idx=0;retryType=[];retryWord=[];retryChoice=[];recentWord=[];newType();newChoice();newWord();renderSlider();}
 (function(){const s=document.getElementById('diffSlider');if(s)s.addEventListener('input',function(){setDiff(DIFF_ORDER[+s.value]||'easy');});document.querySelectorAll('.slider-labels span').forEach(function(sp){sp.onclick=function(){setDiff(DIFF_ORDER[+sp.dataset.i]||'easy');};});})();
 document.getElementById('btn-check-type').onclick=checkType;
